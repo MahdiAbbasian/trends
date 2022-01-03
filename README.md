@@ -4,12 +4,13 @@ A new Flutter project.
 
 ## Getting Started
 
-This app included #Material:
+This app included:
 
-#Hive
-#Container
-#SizedBox
-#Divider
-#DateTime
-#Chart
-#Circle @Square Activity Widget and etc...
+## Material
+## Hive
+## Container
+## SizedBox
+## Divider
+## DateTime
+## Chart
+## Circle @Square Activity Widget and etc...
