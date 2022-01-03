@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
+import 'package:trends/ui/screen/exercise.dart';
+import 'package:trends/ui/screen/home.dart';
+import 'package:trends/ui/screen/medication.dart';
+import 'package:trends/ui/screen/tipday.dart';
+import 'package:trends/ui/screen/trends.dart';
+import 'package:trends/constants.dart';
+import 'package:trends/ui/screen/visual.dart';
+import 'package:trends/ui/widget/shape/circle.dart';
+import 'package:trends/ui/widget/shape/square.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
   runApp(const MyApp());
 }
 
@@ -11,105 +23,380 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: HomePage(-1, -1, -1, -1),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class HomePage extends StatefulWidget {
+  final sliderValue;
+  final feeilingResult;
+  final visualResult;
+  final MedicationResult;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  HomePage(this.sliderValue, this.feeilingResult, this.visualResult,
+      this.MedicationResult);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _HomePageState extends State<HomePage> {
+  Color activityColor = Colors.grey;
+  Color feelingColor = Colors.grey;
+  Color visualColor = Colors.grey;
+  Color medicationColor = Colors.grey;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  void initState() {
+    print(widget.sliderValue);
+    print(widget.feeilingResult);
+    print(widget.visualResult);
+    print(widget.MedicationResult);
+
+    super.initState();
+    if (widget.MedicationResult != -1) {
+
+      checkActivityAns();
+      checkFeelingAns();
+      checkVisualAns();
+      checkMedicationAns();
+
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return Material(
+      child: SafeArea(
+          child: Container(
+            color: kDarkBlueColor,
+            child: Column(
+              children: [
+
+                SizedBox(height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.02),
+                Row(
+                  children: [
+                    const Spacer(
+                      flex: 2,
+                    ),
+                    checkTime(),
+                    const Spacer(
+                      flex: 1,
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          kNavigator(context, HomePage(-1, -1, -1, -1));
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                          color: kFontYellowColor,
+                          size: 40,
+                        )),
+                    const Spacer(
+                      flex: 1,
+                    )
+                  ],
+                ),
+                Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Divider(
+                      color: Colors.white,
+                      thickness: 2,
+                    )),
+                SizedBox(height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.02),
+                circleContainer(
+                    100.0,
+                    100.0,
+                    const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                    '',
+                    context),
+                SizedBox(height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.04),
+                const Text(
+                  'How are you feeling?',
+                  style: TextStyle(color: kFontYellowColor, fontSize: 19),
+                ),
+                SizedBox(height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.08),
+                Row(
+                  children: [
+                    const Spacer(
+                      flex: 1,
+                    ),
+                    RawMaterialButton(onPressed: () {
+                      kNavigator(context, const Home());
+                    },
+                        child: activityCircleContainer(
+                            70.0, 70.0, Container(), 'Activity', context,activityColor)),
+                    const Spacer(
+                      flex: 4,
+                    ),
+                    RawMaterialButton(
+                      onPressed: () {
+                        kNavigator(context, const Medication(-1, -1, -1));
+                      },
+                      child: medicationCircleContainer(
+                          70.0, 70.0, Container(), 'Medications', context,
+                          medicationColor),
+                    ),
+
+                    const Spacer(
+                      flex: 1,
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.05),
+                Row(
+                  children: [
+                    const Spacer(
+                      flex: 2,
+                    ),
+                    RawMaterialButton(onPressed: () {
+                      kNavigator(context, const Exercise(-1));
+                    },
+                        child: exerciseCircleContainer(
+                            70.0, 70.0, Container(), 'Feeling', context,feelingColor)),
+                    const Spacer(
+                      flex: 1,
+                    ),
+                    RawMaterialButton(onPressed: () {
+                      kNavigator(context, const Visual(-1, -1));
+                    },
+                        child: visualCircleContainer(
+                            70.0, 70.0, Container(), 'Visual', context,visualColor)),
+                    const Spacer(
+                      flex: 2,
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                const Divider(
+                  color: Colors.white,
+                  thickness: 1,
+                ),
+                Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.13,
+                  child: Row(
+                    children: [
+                      squareContainer(
+                          MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.3,
+                          1.0,
+                          //MediaQuery.of(context).size.height * 0.13,
+                          Icons.home,
+                          'Home',
+                          context, HomePage(-1, -1, -1, -1)),
+                      const VerticalDivider(color: Colors.white),
+                      squareContainer(
+                          MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.3,
+                          1.0,
+                          //MediaQuery.of(context).size.height * 0.13,
+                          Icons.show_chart_sharp,
+                          'Trends',
+                          context, Trends(widget.sliderValue)),
+                      const VerticalDivider(color: Colors.white),
+                      squareContainer2(
+                          MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.3,
+                          1.0,
+                          //MediaQuery.of(context).size.height * 0.13,
+                          "assets/images/tip.jpg",
+                          'Tip of the day',
+                          context, TipDay()),
+
+
+                    ],
+                  ),
+                )
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          )),
     );
+  }
+
+  checkActivityAns() {
+    setState(() {
+      //20-30 minutes is green, 10-20 minutes is orange, 0-10 minutes is red
+      if (20 <= widget.sliderValue && widget.sliderValue <= 1000) {
+        setState(() {
+          activityColor = kDarkGreenColor;
+        });
+      }
+      else if (10 <= widget.sliderValue && widget.sliderValue < 20) {
+        setState(() {
+          activityColor = kOrangeColor;
+        });
+      }
+      else if (0 <= widget.sliderValue && widget.sliderValue < 10) {
+        setState(() {
+          activityColor = kRedColor;
+        });
+      }
+
+    }
+    );
+  }
+
+  checkFeelingAns() {
+    int count = 0;
+    setState(() {
+      for (int i = 0; i <5; i++) {
+        if (widget.feeilingResult[i] == 5) {
+          count++;}
+        if (count == 4) {
+          setState(() {
+            feelingColor = kDarkGreenColor;
+          });
+        }
+        else if (count == 3) {
+          setState(() {
+            feelingColor = kLightGreenColor;
+          });
+        }
+        else if (count == 2) {
+          setState(() {
+            feelingColor = kMyYellowColor;
+          });
+        }
+        else if (count == 1 || count == 0) {
+          setState(() {
+            feelingColor = kRedColor;
+          });
+        }
+      }
+
+    });
+  }
+
+  checkVisualAns() {
+    int count = 0;
+    setState(() {
+      for (int i = 0; i < 4; i++) {
+        if (widget.visualResult[i] == 5) {
+          count++;}
+        if (count == 4) {
+          setState(() {
+            visualColor = kDarkGreenColor;
+          });
+        }
+        else if (count == 3) {
+          setState(() {
+            visualColor = kLightGreenColor;
+          });
+        }
+        else if (count == 2) {
+          setState(() {
+            visualColor = kMyYellowColor;
+          });
+        }
+        else if (count == 1 || count == 0) {
+          setState(() {
+            visualColor = kRedColor;
+          });
+        }
+      }
+
+    });
+  }
+
+  checkMedicationAns() {
+    int count = 0;
+    setState(() {
+      for (int i = 0; i < 4; i++) {
+        if (widget.MedicationResult[i] == true) {
+          count++;
+          if (count == 4) {
+            setState(() {
+              medicationColor = kDarkGreenColor;
+            });
+          }
+          else if (count == 3) {
+            setState(() {
+              medicationColor = kLightGreenColor;
+            });
+          }
+          else if (count == 2) {
+            setState(() {
+              medicationColor = kMyYellowColor;
+            });
+          }
+          else if (count == 1 || count == 0) {
+            setState(() {
+              medicationColor = kRedColor;
+            });
+          }
+        }
+      }
+    });
+  }
+
+  checkTime() {
+    var time= DateFormat.H()
+        .format(DateTime.now()).toString();
+
+    var myInt = int.parse(time);
+    if(myInt>5&&myInt<12){ return const Text(
+      'Good morning',style: TextStyle(
+        color: kFontYellowColor,
+        fontSize: 20,
+        decoration: TextDecoration.none),
+    );}
+    else   if(myInt>12&&myInt<16){ return const Text(
+      'Good Afternoon ',style: TextStyle(
+        color: kFontYellowColor,
+        fontSize: 20,
+        decoration: TextDecoration.none),
+    );}
+    else   if(myInt>16&&myInt<19){ return const Text(
+      'Good evening',style: TextStyle(
+        color: kFontYellowColor,
+        fontSize: 20,
+        decoration: TextDecoration.none),
+    );}
+    else   if(myInt>19&&myInt<24){ return const Text(
+      'Good Night',style: TextStyle(
+        color: kFontYellowColor,
+        fontSize: 20,
+        decoration: TextDecoration.none),
+    );}
+    else   { return const Text(
+      'Hello',style: TextStyle(
+        color: kFontYellowColor,
+        fontSize: 20,
+        decoration: TextDecoration.none),
+    );}
   }
 }
