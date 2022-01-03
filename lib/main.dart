@@ -233,11 +233,9 @@ class _HomePageState extends State<HomePage> {
                               .width * 0.3,
                           1.0,
                           //MediaQuery.of(context).size.height * 0.13,
-                          "assets/images/tip.jpg",
+                          "assets/trending.png",
                           'Tip of the day',
-                          context, TipDay()),
-
-
+                          context, const TipDay()),
                     ],
                   ),
                 )
